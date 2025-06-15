@@ -1,19 +1,17 @@
-.text-block{
-  width: 39.4px;
-  height: 58px;
-  margin-top: 6px;
-  margin-left: 3px;
-  margin-right: 3px;
-  border-radius: 8px;
-  background-color: #444;
-  align-items: center;
-  justify-content: center;
+.separator {
+  width: 321px;
+  height: 1px;
+  background-color: #ccc;
 }
 
-.key-line{
-  width: 454px;
-  height: 64px;
+.list-item-wrapper {
+  width: 321px;
+  height: 96px;
   align-items: center;
-  justify-content: center;
-  background-color: transparent;
+}
+
+.list-item {
+  width: 321px;
+  font-size: 30px;
+  font-family: RobotoCondensed-Regular;
 }

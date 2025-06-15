@@ -1,45 +1,90 @@
+import file from '@system.file';
+import app from '@system.app';
+
 export default {
   data: {
-    text: "",
-    keys: [
-      ['Q','W','E','R','T','Y','U','I','O','P'],
-      ['A','S','D','F','G','H','J','K','L'],
-      ['Z','X','C','V','B','N','M']
-    ],
-    keyboard: false,
-    // cursor: false,
-    // cursorAnimation: null,
+    paths: ["//app"],
+    files: [],
+    failData: "",
+    fileContent: "",
+    showLeftSideSwipe: false,
+    leftSideSwipeTimeout:null,
   },
   onInit() {
-    // this.resetCursorAnimation();
+    this.openPath();
   },
-  onKeyboardSwipe(e){
-    if (e.direction === "down") this.keyboard = false;
-    else if (e.direction === "up") this.keyboard = true;
+  onGoParentClick(){
+    const currentPath = this.paths[this.paths.length - 1];
+    if(this.paths.length === 1 || currentPath.slice(-4) === "\\\\.."){
+      this.paths.push(currentPath + "\\\\..");
+    } else {
+      return this.onGoBackClick();
+    }
+    this.openPath();
   },
-  onKeyPress(v){
-    this.writeText(v);
+  onGoBackClick(){
+    if (this.paths.length > 1){
+      this.paths.pop();
+      this.openPath();
+    }
   },
-  onDelPress(){
-    this.delText();
+  onGoClick(item) {
+    this.paths.push(this.paths[this.paths.length - 1] + "/" + item.uri);
+    this.openPath();
   },
-  onEnterPress(){
-
+  openPath(){
+    const currentPath = `internal:${this.paths[this.paths.length - 1]}`;
+    file.get({
+      uri: currentPath,
+      success: d => {
+        if (d.type === "dir") {
+          file.list({
+            uri: currentPath,
+            success: d => {
+              this.clearData();
+              this.files = d.fileList;
+            },
+            fail: this.showFailData
+          });
+        } else if (d.type === "file") {
+          file.readText({
+            uri: currentPath,
+            success: d => {
+              this.clearData();
+              this.fileContent = d.text;
+            },
+            fail: this.showFailData
+          })
+        }
+      },
+      fail: this.showFailData
+    });
   },
-  writeText(v){
-    // this.resetCursorAnimation();
-    // if(v==="\\n")v="\n"
-    this.text = this.text + v.toString();
+  clearData(){
+    this.files = [];
+    this.failData = "";
+    this.fileContent = "";
   },
-  delText(){
-    // this.resetCursorAnimation();
-    this.text = this.text.slice(0,-1);
+  showFailData(data, code){
+    this.files = [];
+    this.failData = `${code} ${data}`;
+    this.fileContent = "";
   },
-  // resetCursorAnimation() {
-  //   this.cursor = true;
-  //   clearInterval(this.cursorAnimation);
-  //   this.cursorAnimation = setInterval(()=>{
-  //     this.cursor = !this.cursor
-  //   },500);
-  // },
+  getListItemBgColor(i){
+    const bgc = i.type === 'dir' ? '#ffa' : ( i.type === 'file' ? '#aaf' : '#fff');
+    // throw new Error(bgc);
+    return bgc
+  },
+  onLeftSideSwipe(e) {
+    if (e.direction === "right"){
+      if(this.showLeftSideSwipe){
+        app.terminate();
+      } else{
+        this.showLeftSideSwipe = true;
+        this.leftSideSwipeTimeout = setTimeout(()=>{
+          this.showLeftSideSwipe = false;
+        },1200);
+      }
+    }
+  },
 }

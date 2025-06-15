@@ -1,29 +1,25 @@
 <stack style="width: 454px; height: 454px;">
-  <list style="width: 321px; height: 4540px; left: 66.5px; align-items: flex-start;">
-    <list-item style="width: 321px; height: 454px; flex-wrap: wrap; padding-top: 66.5px;">
-<!--      <text for="{{text.split('')}}" style="height: 32px;">{{$item}}</text>-->
-      <text style="width: 321px;">{{"> "}}{{text}}</text>
-<!--      <text>{{cursor ? "▏" : ""}}</text>-->
+  <list style="width: 321px; height: 454px; left: 66.5px; align-items: flex-start; background-color: transparent;">
+    <list-item style="width: 321px; height: 4540px; flex-direction: column;">
+      <div style="width: 321px; height: 66.5px; align-items: flex-end;">
+        <div onclick="onGoParentClick" style="width: 160.5px; height: 66.5px; align-items: center; justify-content: flex-end;">
+          <text>{{ "[↑]  " }}</text>
+        </div>
+        <div onclick="onGoBackClick" style="width: 160.5px; height: 66.5px; align-items: center;">
+          <text>{{ "  [←]" }}</text>
+        </div>
+      </div>
+      <div class="list-item-wrapper"><text class="list-item">{{ this.paths[this.paths.length - 1] }}</text></div>
+      <div style="width: 321px; height: 2px; background-color: #fff;"></div>
+      <div for="{{ files }}" style="width: 321px; height: 97px; flex-direction: column;">
+        <div onclick="onGoClick({{ $item }})" class="list-item-wrapper"><text class="list-item" style="color: {{ getListItemBgColor($item) }};">{{ $item.uri }}</text></div>
+        <div class="separator"></div>
+      </div>
+      <div if="{{ failData !== '' }}" class="list-item-wrapper"><text class="list-item">{{ failData }}</text></div>
+      <div if="{{ fileContent !== '' }}" class="list-item-wrapper"><text class="list-item">{{ fileContent }}</text></div>
     </list-item>
   </list>
-  <div if="{{!keyboard}}" onswipe="onKeyboardSwipe" style="width: 454px; height: 45.4px; top: 408.6px; background-color: #333; align-items: center; justify-content: center;">
-    <text>键盘</text>
-  </div>
-  <div if="{{keyboard}}" onswipe="onKeyboardSwipe" style="width: 454px; height: 274px; top: 180px; background-color: #333; flex-direction: column;">
-    <div class="key-line">
-      <div on:click="{{onKeyPress($item)}}" class="text-block" for="{{keys[0]}}"><text>{{ $item }}</text></div>
-    </div>
-    <div class="key-line">
-      <div on:click="{{onKeyPress($item)}}" class="text-block" for="{{keys[1]}}"><text>{{ $item }}</text></div>
-    </div>
-    <div class="key-line">
-      <div on:click="{{onKeyPress($item)}}" class="text-block" for="{{keys[2]}}"><text>{{ $item }}</text></div>
-      <div on:click="onDelPress" class="text-block"><text>←</text></div>
-    </div>
-    <div style="width: 454px; height: 76px; margin-top: 6px; background-color: transparent; align-items: center; justify-content: center;">
-      <div on:click="onEnterPress" style="width: 84.4px; height: 45.4px; border-radius: 8px; background-color: #444; align-items: center; justify-content: center;">
-        <text>→</text>
-      </div>
-    </div>
+  <div on:swipe="onLeftSideSwipe" class="text-wrap" style="width: 45px; height: 454px; background-color: {{showLeftSideSwipe?'#aa777777':'#00000000'}};">
+    <text if="{{showLeftSideSwipe}}">{{'《 '}}</text>
   </div>
 </stack>

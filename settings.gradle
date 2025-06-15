@@ -1,2 +1,2 @@
-rootProject.name = 'zhshi_wordle'
+rootProject.name = 'zhshi_files'
 include ':entry'

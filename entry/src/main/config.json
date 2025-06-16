@@ -4,11 +4,10 @@
     "vendor": "kqakqakqa",
     "version": {
       "code": 1000000,
-      "name": "1.0.0"
+      "name": "1.0.0.20250617"
     }
   },
-  "deviceConfig": {
-  },
+  "deviceConfig": {},
   "module": {
     "deviceType": [
       "liteWearable"
@@ -17,6 +16,16 @@
       "deliveryWithInstall": true,
       "moduleName": "entry",
       "moduleType": "entry"
+    },
+    "distroFilter": {
+      "screenShape": {
+        "policy": "include",
+        "value": ["circle"]
+      },
+      "screenWindow": {
+        "policy": "include",
+        "value": ["454*454"]
+      }
     },
     "abilities": [
       {
@@ -29,7 +38,8 @@
     "js": [
       {
         "pages": [
-          "pages/index/index"
+          "pages/index/index",
+          "pages/about/about"
         ],
         "name": "default"
       }

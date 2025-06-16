@@ -1,0 +1,6 @@
+<div style="width: 454px; height: 454px; align-items: center; justify-content: center; flex-direction: column;" on:swipe="onBack">
+  <text style="font-size: 30px;">枳实系列</text>
+  <text style="font-size: 38px;">文件</text>
+  <text style="font-size: 30px; margin-bottom: 12px;">v{{versionName}}</text>
+  <text style="width: 454px; font-size: 30px; font-family: RobotoCondensed-Regular; text-align: center; color: #aaaaaa; border-color: #aaaaaa;">github.com/kqakqakqa/\nzhshi_files/</text>
+</div>

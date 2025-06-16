@@ -16,10 +16,13 @@
         <div class="separator"></div>
       </div>
       <div if="{{ failData !== '' }}" class="list-item-wrapper"><text class="list-item">{{ failData }}</text></div>
-      <div if="{{ fileContent !== '' }}" class="list-item-wrapper"><text class="list-item">{{ fileContent }}</text></div>
+      <div if="{{ fileContent !== '' }}" style="width: 321px; height: 4375.5px;"><text class="list-item">{{ fileContent }}</text></div>
     </list-item>
   </list>
-  <div on:swipe="onLeftSideSwipe" class="text-wrap" style="width: 45px; height: 454px; background-color: {{showLeftSideSwipe?'#aa777777':'#00000000'}};">
+  <div on:swipe="onLeftSideSwipe" class="text-wrap" style="width: 45px; height: 454px; background-color: {{showLeftSideSwipe?'#cc777777':'#00000000'}};">
     <text if="{{showLeftSideSwipe}}">{{'《 '}}</text>
+  </div>
+  <div on:swipe="onBottomSideSwipe" class="text-wrap" style="top: 409px; width: 454px; height: 45px; background-color: {{showBottomSideSwipe?'#cc777777':'#00000000'}};">
+    <text if="{{showBottomSideSwipe}}">关于</text>
   </div>
 </stack>

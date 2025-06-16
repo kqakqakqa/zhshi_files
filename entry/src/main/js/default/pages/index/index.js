@@ -1,5 +1,6 @@
 import file from '@system.file';
 import app from '@system.app';
+import router from '@system.router';
 
 export default {
   data: {
@@ -8,7 +9,9 @@ export default {
     failData: "",
     fileContent: "",
     showLeftSideSwipe: false,
+    showBottomSideSwipe:false,
     leftSideSwipeTimeout:null,
+    bottomSideSwipeTimeout: null,
   },
   onInit() {
     this.openPath();
@@ -83,6 +86,18 @@ export default {
         this.showLeftSideSwipe = true;
         this.leftSideSwipeTimeout = setTimeout(()=>{
           this.showLeftSideSwipe = false;
+        },1200);
+      }
+    }
+  },
+  onBottomSideSwipe(e){
+    if (e.direction === "up"){
+      if(this.showBottomSideSwipe){
+        router.replace({uri: "/pages/about/about"});
+      } else{
+        this.showBottomSideSwipe = true;
+        this.bottomSideSwipeTimeout = setTimeout(()=>{
+          this.showBottomSideSwipe = false;
         },1200);
       }
     }

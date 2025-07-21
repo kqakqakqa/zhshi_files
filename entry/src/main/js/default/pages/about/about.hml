@@ -1,6 +1,12 @@
-<div style="width: 454px; height: 454px; align-items: center; justify-content: center; flex-direction: column;" on:swipe="onBack">
-  <text style="font-size: 30px;">枳实系列</text>
-  <text style="font-size: 38px;">文件</text>
-  <text style="font-size: 30px; margin-bottom: 12px;">v{{versionName}}</text>
-  <text style="width: 454px; font-size: 30px; font-family: RobotoCondensed-Regular; text-align: center; color: #aaaaaa; border-color: #aaaaaa;">github.com/kqakqakqa/\nzhshi_files/</text>
-</div>
+<list onswipe="onBack" style="width: 454px; height: 454px;">
+  <list-item style="width: 454px; height: 2270px; align-items: center; flex-direction: column;">
+    <image src="/../../entry/resources/base/media/icon.png" style="width: 114px; height: 114px; margin-top: 66.5px; margin-bottom: 12px;"></image>
+    <text class="text">枳实系列</text>
+    <text class="text" style="font-size: 38px;">文件</text>
+    <text class="text" style="margin-bottom: 12px;">v{{versionName}}</text>
+    <text class="smallEngText" style="color: #aaaaaa; margin-bottom: 12px;">github.com/kqakqakqa/\n{{
+      appName }}/</text>
+    <text class="text" style="margin-bottom: 12px;">开放源代码许可：</text>
+    <text class="smallEngText">{{ LICENSE }}</text>
+  </list-item>
+</list>

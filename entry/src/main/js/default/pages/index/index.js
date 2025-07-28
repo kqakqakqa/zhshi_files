@@ -11,12 +11,15 @@ export default {
     fileType: "",
     fileContent: "",
     showLeftSideSwipe: false,
-    showBottomSideSwipe:false,
-    leftSideSwipeTimeout:null,
+    showBottomSideSwipe: false,
+    leftSideSwipeTimeout: null,
     bottomSideSwipeTimeout: null,
     deviceStatus: "",
     openPosition: 0,
-    pageSize: 210,
+    atStartEnd: undefined,
+    maxChars: 80,
+    maxBytes: 324,
+    maxLines: 8,
     showTitle: true,
   },
   onInit() {
@@ -27,7 +30,7 @@ export default {
     setInterval(()=>{
       battery.getStatus({
         success: data=>{
-          const batteryStatus = `${data.charging ? "充电中" : `电量${data.level*100}%`}`;
+          const batteryStatus = `${data.charging ? "充电中" : `${data.level*100}%`}`;
           var date = new Date();
           var hour = date.getHours();
           var minute = date.getMinutes();
@@ -70,12 +73,10 @@ export default {
     this.openPath();
   },
   onPrevPageClick(){
-    this.openPosition -= this.pageSize;
-    this.openPath();
+    this.openPath("prev");
   },
   onNextPageClick(){
-    this.openPosition += this.pageSize;
-    this.openPath();
+    this.openPath("next");
   },
   onPageSwipe(data) {
     switch (data.direction) {
@@ -89,7 +90,7 @@ export default {
         break;
     }
   },
-  openPath(){
+  openPath(positionDirection){
     const currentPath = `internal://app\\\\..\\\\..\\\\..\\\\..${this.paths[this.paths.length - 1]}`;
     file.get({
       uri: currentPath,
@@ -123,16 +124,49 @@ export default {
                 break;
               }
               default: {
-                if (this.openPosition < 0) this.openPosition = 0;
-                else if (this.openPosition > d.length) this.openPosition = d.length;
-                file.readText({
+                switch (positionDirection) {
+                  case "prev":{
+                    this.openPosition -= this.maxBytes;
+                    break;
+                  }
+                  case "next":{
+                    this.openPosition += this.getByteLength(this.fileContent);
+                    break;
+                  }
+                  default:{
+                    break;
+                  }
+                }
+                if(this.openPosition <= 0) {
+                  this.openPosition = 0;
+                  positionDirection = undefined;
+                  this.atStartEnd = "start";
+                } else if(this.openPosition>=d.length) {
+                  this.openPosition = d.length;
+                  this.atStartEnd = "end";
+                } else {
+                  this.atStartEnd = undefined;
+                }
+                file.readArrayBuffer({
                   uri: currentPath,
                   position: this.openPosition,
-                  length: this.pageSize,
+                  length: this.maxBytes,
                   success: d => {
+                    const text = this.replaceCRLF2LF(this.safeDecodeUTF8(d.buffer));
                     this.clearData();
                     this.fileType = "text";
-                    this.fileContent = d.text;
+                    switch (positionDirection) {
+                      case "prev":{
+                        // this.fileContent = this.getOnePageSlice(text)
+                        this.fileContent = this.getOnePageSlice(text.split("").reverse().join("")).split("").reverse().join("");
+                        this.openPosition += this.maxBytes - this.getByteLength(this.fileContent);
+                        break;
+                      }
+                      default:{
+                        this.fileContent = this.getOnePageSlice(text);
+                        break;
+                      }
+                    }
                   },
                   fail: this.showFailData
                 });
@@ -147,6 +181,124 @@ export default {
       },
       fail: this.showFailData
     });
+  },
+  getByteLength(str) {
+    let byteLength = 0;
+    for (let i = 0; i < str.length; i++) {
+      const code = str.charCodeAt(i);
+      if (code <= 0x7F) {
+        byteLength += 1;
+      } else if (code <= 0x7FF) {
+        byteLength += 2;
+      } else if (code >= 0xD800 && code <= 0xDBFF) { // 高位代理
+        byteLength += 4;
+        i++;
+      } else if (code >= 0xDC00 && code <= 0xDFFF) { // 低位代理，一般不单独出现的
+        continue;
+      } else {
+        byteLength += 3;
+      }
+    }
+    return byteLength;
+  },
+  getOnePageSlice(str) {
+    let result = "";
+    let charCount = 0;
+    let lineCount = 0;
+    let currentLineLength = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str[i];
+      result += char;
+      charCount++;
+      currentLineLength++;
+      if (currentLineLength >= this.maxChars / this.maxLines) {
+        lineCount++;
+        currentLineLength = 0;
+      } else if (char === "\n") {
+        lineCount+=2;
+        currentLineLength = 0;
+      }
+      if (
+        charCount >= this.maxChars ||
+        lineCount > this.maxLines
+      ) break;
+    }
+    return result;
+  },
+  replaceCRLF2LF(str) {
+    var result = "";
+    for (var i = 0; i < str.length; i++) {
+      result += str[i] === "\r" ? "\x1F" : str[i];
+    }
+    return result;
+  },
+  safeDecodeUTF8(bytes) {
+    let result = '';
+    let i = 0;
+
+    while (i < bytes.length) {
+      const byte1 = bytes[i];
+
+      if (byte1 <= 0x7F) {
+        // 1字节字符（ASCII）
+        result += String.fromCharCode(byte1);
+        i += 1;
+      } else if (byte1 >= 0xC2 && byte1 <= 0xDF) {
+        // 2字节字符
+        if (i + 1 < bytes.length) {
+          const byte2 = bytes[i + 1];
+          if ((byte2 & 0xC0) === 0x80) {
+            const codePoint = ((byte1 & 0x1F) << 6) | (byte2 & 0x3F);
+            result += String.fromCharCode(codePoint);
+            i += 2;
+            continue;
+          }
+        }
+        i += 1; // 不合法，跳过 byte1
+      } else if (byte1 >= 0xE0 && byte1 <= 0xEF) {
+        // 3字节字符
+        if (i + 2 < bytes.length) {
+          const byte2 = bytes[i + 1];
+          const byte3 = bytes[i + 2];
+          if ((byte2 & 0xC0) === 0x80 && (byte3 & 0xC0) === 0x80) {
+            const codePoint = ((byte1 & 0x0F) << 12) |
+            ((byte2 & 0x3F) << 6) |
+            (byte3 & 0x3F);
+            result += String.fromCharCode(codePoint);
+            i += 3;
+            continue;
+          }
+        }
+        i += 1; // 不合法，跳过 byte1
+      } else if (byte1 >= 0xF0 && byte1 <= 0xF4) {
+        // 4字节字符（可能会超出 BMP 需要 surrogate pair）
+        if (i + 3 < bytes.length) {
+          const byte2 = bytes[i + 1];
+          const byte3 = bytes[i + 2];
+          const byte4 = bytes[i + 3];
+          if ((byte2 & 0xC0) === 0x80 &&
+          (byte3 & 0xC0) === 0x80 &&
+          (byte4 & 0xC0) === 0x80) {
+            const codePoint = ((byte1 & 0x07) << 18) |
+            ((byte2 & 0x3F) << 12) |
+            ((byte3 & 0x3F) << 6) |
+            (byte4 & 0x3F);
+            // surrogate pair
+            const high = ((codePoint - 0x10000) >> 10) + 0xD800;
+            const low = ((codePoint - 0x10000) & 0x3FF) + 0xDC00;
+            result += String.fromCharCode(high, low);
+            i += 4;
+            continue;
+          }
+        }
+        i += 1; // 不合法，跳过 byte1
+      } else {
+        // 非法起始字节
+        i += 1;
+      }
+    }
+
+    return result;
   },
   clearData(){
     this.fileType = "";

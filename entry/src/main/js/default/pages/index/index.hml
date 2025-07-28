@@ -23,8 +23,8 @@
         <text style="width: 321px; top: 66.5px; left: 66.5px;">{{ fileContent }}</text>
         <div onclick="onPrevPageClick" style="width: 227px; height: 454px; background-color: transparent;"></div>
         <div onclick="onNextPageClick" style="width: 227px; height: 454px; left: 227px; background-color: transparent;"></div>
-        <div style="width: 66.5px; height: 454px; align-items: center; justify-content: center; font-size: 36px;"><text>{{"<"}}</text></div>
-        <div style="width: 66.5px; height: 454px; left: 387.5px; align-items: center; justify-content: center; font-size: 36px;"><text>{{">"}}</text></div>
+        <div if="{{ atStartEnd !== 'start' }}" style="width: 66.5px; height: 454px; align-items: center; justify-content: center; font-size: 36px;"><text>{{"<"}}</text></div>
+        <div if="{{ atStartEnd !== 'end' }}" style="width: 66.5px; height: 454px; left: 387.5px; align-items: center; justify-content: center; font-size: 36px;"><text>{{">"}}</text></div>
       </stack>
     </list-item>
 <!--    <list-item if="{{ fileType === 'image' || true }}" style="width: 454px; height: 454px;">-->

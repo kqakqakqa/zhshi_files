@@ -27,11 +27,11 @@
         <div if="{{ atStartEnd !== 'end' }}" style="width: 66.5px; height: 454px; left: 387.5px; align-items: center; justify-content: center; font-size: 36px;"><text>{{">"}}</text></div>
       </stack>
     </list-item>
-<!--    <list-item if="{{ fileType === 'image' || true }}" style="width: 454px; height: 454px;">-->
-<!--      <stack onswipe="onPageSwipe" style="width: 454px; height: 454px;">-->
-<!--        <image src="/pages/index/1.png" style="width: 454px; height: 454px; background-color: lightblue;"></image>-->
-<!--      </stack>-->
-<!--    </list-item>-->
+    <list-item if="{{ fileType === 'image' }}" style="width: 454px; height: {{showTitle ? '289.5px' : '454 px'}};">
+      <stack onswipe="onPageSwipe" style="width: 454px; height: 454px;">
+        <image src="{{ currentPath }}" style="width: 454px; height: 454px; background-color: dimgrey;"></image>
+      </stack>
+    </list-item>
   </list>
   <text onswipe="onLeftSideSwipe" style="width: 908px; height: 908px; left: -863px; top: -227px; border-radius: 908px; background-color: {{showLeftSideSwipe?'#cc777777':'#00000000'}}; text-align: right; padding-top: 431.5px; padding-right: 12px;">{{showLeftSideSwipe ? '《' : ""}}</text>
   <text onswipe="onBottomSideSwipe" style="width: 908px; height: 908px; left: -227px; top: 409px; border-radius: 908px; background-color: {{showBottomSideSwipe ? '#cc777777' : '#00000000'}}; padding-top: 2px; text-align: center;">{{showBottomSideSwipe ? "关于" : ""}}</text>

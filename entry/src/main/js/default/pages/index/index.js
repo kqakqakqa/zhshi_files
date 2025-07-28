@@ -111,16 +111,20 @@ export default {
           case "file": {
             const fileExt = d.uri.split(".").slice(-2).join(".");
             switch (fileExt) {
+              case "bmp.mp3":
+              case "jpg.mp3":
               case "png.mp3": {
-                file.copy({
-                  srcUri: currentPath,
-                  dstUri: "internal://app/image.png",
-                  success: ()=>{
-                    this.clearData();
-                    this.fileType = "image";
-                  },
-                  fail: this.showFailData
-                })
+                this.clearData();
+                this.fileType = "image";
+                // file.copy({
+                //   srcUri: currentPath,
+                //   dstUri: "internal://app/image.png",
+                //   success: ()=>{
+                //     this.clearData();
+                //     this.fileType = "image";
+                //   },
+                //   fail: this.showFailData
+                // })
                 break;
               }
               default: {

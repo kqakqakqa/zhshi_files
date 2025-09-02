@@ -30,7 +30,7 @@ export default {
     setInterval(()=>{
       battery.getStatus({
         success: data=>{
-          const batteryStatus = `${data.charging ? "充电中" : `${data.level*100}%`}`;
+          const batteryStatus = `${data.charging ? "充电中" : `${parseInt(data.level*100)}%`}`;
           var date = new Date();
           var hour = date.getHours();
           var minute = date.getMinutes();

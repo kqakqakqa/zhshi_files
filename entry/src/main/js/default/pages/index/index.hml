@@ -29,10 +29,11 @@
     </list-item>
     <list-item if="{{ fileType === 'image' }}" style="width: 454px; height: {{showTitle ? '289.5px' : '454 px'}};">
       <stack onswipe="onPageSwipe" style="width: 454px; height: 454px;">
-        <image src="{{ currentPath }}" style="width: 454px; height: 454px; background-color: dimgrey;"></image>
+<!--        <image src="{{ currentPath }}" style="width: 454px; height: 454px; background-color: dimgrey;"></image>-->
+        <image if="{{fileType === 'image'}}" src="/../../../../../../user/image.bin" style="width: 454px; height: 454px; background-color: dimgrey; object-fit: contain;"></image>
       </stack>
     </list-item>
   </list>
-  <text onswipe="onLeftSideSwipe" style="width: 908px; height: 908px; left: -863px; top: -227px; border-radius: 908px; background-color: {{showLeftSideSwipe?'#cc777777':'#00000000'}}; text-align: right; padding-top: 431.5px; padding-right: 12px;">{{showLeftSideSwipe ? '《' : ""}}</text>
-  <text onswipe="onBottomSideSwipe" style="width: 908px; height: 908px; left: -227px; top: 409px; border-radius: 908px; background-color: {{showBottomSideSwipe ? '#cc777777' : '#00000000'}}; padding-top: 2px; text-align: center;">{{showBottomSideSwipe ? "关于" : ""}}</text>
+  <!-- <text onswipe="onLeftSideSwipe" style="width: 908px; height: 908px; left: -863px; top: -227px; border-radius: 908px; background-color: {{showLeftSideSwipe?'#cc777777':'#00000000'}}; text-align: right; padding-top: 431.5px; padding-right: 12px;">{{showLeftSideSwipe ? '《' : ""}}</text>
+  <text onswipe="onBottomSideSwipe" style="width: 908px; height: 908px; left: -227px; top: 409px; border-radius: 908px; background-color: {{showBottomSideSwipe ? '#cc777777' : '#00000000'}}; padding-top: 2px; text-align: center;">{{showBottomSideSwipe ? "关于" : ""}}</text> -->
 </stack>

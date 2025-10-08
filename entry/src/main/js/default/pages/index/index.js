@@ -6,7 +6,7 @@ import brightness from '@system.brightness';
 
 export default {
   data: {
-    paths: ["/app/user"],
+    paths: [""],
     files: [],
     fileType: "",
     fileContent: "",
@@ -42,23 +42,7 @@ export default {
   },
   onGoParentClick(){
     const currentPath = this.paths[this.paths.length - 1];
-
-    let len = currentPath.length;
-    while (len > 1 && currentPath.charAt(len - 1) === '/') {
-      len--;
-    }
-    let lastSlash = -1;
-    for (let i = len - 1; i >= 0; i--) {
-      if (currentPath.charAt(i) === '/') {
-        lastSlash = i;
-        break;
-      }
-    }
-    if (lastSlash <= 0) {
-      this.paths.push("/");
-    } else {
-      this.paths.push(currentPath.substring(0, lastSlash));
-    }
+    this.paths.push(currentPath+"\\\\..");
     this.openPath();
   },
   onGoBackClick(){
@@ -91,7 +75,7 @@ export default {
     }
   },
   openPath(positionDirection){
-    const currentPath = `internal://app\\\\..\\\\..\\\\..\\\\..${this.paths[this.paths.length - 1]}`;
+    const currentPath = `internal://app${this.paths[this.paths.length - 1]}`;
     file.get({
       uri: currentPath,
       success: d => {
@@ -113,18 +97,24 @@ export default {
             switch (fileExt) {
               case "bmp.mp3":
               case "jpg.mp3":
-              case "png.mp3": {
-                this.clearData();
-                this.fileType = "image";
-                // file.copy({
-                //   srcUri: currentPath,
-                //   dstUri: "internal://app/image.png",
-                //   success: ()=>{
-                //     this.clearData();
-                //     this.fileType = "image";
-                //   },
-                //   fail: this.showFailData
-                // })
+              case "png.mp3":
+              case "bin.mp3": {
+                // this.clearData();
+                // this.fileType = "image";
+                // file.delete({
+                //   uri: "internal://app\\\\..\\\\..\\\\../user/image.bin",
+                //   complete: () => {
+                    file.copy({
+                      srcUri: currentPath,
+                      dstUri: "internal://app\\\\..\\\\..\\\\../user/image.bin",
+                      success: ()=>{
+                        this.clearData();
+                        this.fileType = "image";
+                      },
+                      fail: this.showFailData
+                    });
+                //   }
+                // });
                 break;
               }
               default: {

@@ -4,7 +4,7 @@
     "vendor": "kqakqakqa",
     "version": {
       "code": 0,
-      "name": "1.1.20251008"
+      "name": "1.2.in-progress"
     }
   },
   "deviceConfig": {},
@@ -29,7 +29,13 @@
       {
         "pages": [
           "pages/index/index",
-          "pages/about/about"
+          "pages/menu/menu",
+          "pages/menu/about/about",
+          "pages/menu/deviceInfo/deviceInfo",
+          "pages/menu/licenses/licenses",
+          "pages/viewer-dir/viewer-dir",
+          "pages/viewer-img/viewer-img",
+          "pages/viewer-text/viewer-text"
         ],
         "name": "default"
       }

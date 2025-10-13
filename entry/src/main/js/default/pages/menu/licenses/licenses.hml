@@ -1,0 +1,7 @@
+<stack on:swipe="swipeBack" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
+  <swiper on:swipe="swipeBack" vertical="true" style="top: {{-uiSizes.screenHeight}}px; left:{{uiSizes.leftMargin}}px; width: {{uiSizes.uiWidth}}px; height: {{uiSizes.screenHeight * 2}}px;">
+    <div style="height: 0px;"></div>
+    <div style="height: {{uiSizes.topMargin}}px;"></div>
+    <text for="{{licenses.split('\n')}}" style="width: {{uiSizes.uiWidth}}px;">{{$item}}</text>
+  </swiper>
+</stack>

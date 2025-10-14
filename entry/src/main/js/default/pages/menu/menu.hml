@@ -1,0 +1,14 @@
+<stack style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
+  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; flex-direction: column; align-items: center; justify-content: center;">
+    <text on:click="clickAbout" class="ui-button">关于</text>
+    <text on:click="clickLicenses" class="ui-button">开放源代码许可</text>
+    <text on:click="clickDeviceInfo" class="ui-button">设备信息</text>
+    <text on:click="exitApp" on:swipe="nullFn" class="ui-button">退出应用</text>
+  </div>
+  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; align-items: flex-end;">
+    <text style="width: {{uiSizes.screenWidth}}px; text-align: center; font-size: 30px;">{{timeBatteryStr}}</text>
+  </div>
+  <div on:swipe="swipeBack" style="top: {{uiSizes.screenWidth - uiSizes.topMargin}}px; width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; justify-content: center; align-items: center;">
+    <div style="width: 60px; height: 8px; background-color: #6495ed; border-radius: 8px;"></div>
+  </div>
+</stack>

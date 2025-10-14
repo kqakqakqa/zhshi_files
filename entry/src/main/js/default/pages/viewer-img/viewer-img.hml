@@ -1,0 +1,15 @@
+<stack style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
+  <div on:click="onImgClick" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
+    <image if="{{uiRefresh}}" src="/zhshi-file-img/{{imgCopyName}}" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; background-color: #333; object-fit: contain;"></image>
+  </div>
+
+  <div if="{{showTitle}}" on:click="nullFn" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin + 48 + 2}}px; flex-direction: column; background-color: transparent;">
+    <div on:click="onGoBackClick" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; align-items: center; justify-content: center; background-color: #aa000000;">
+      <text>{{ "[←]" }}</text>
+    </div>
+    <div style="width: {{uiSizes.screenWidth}}px; height: 48px; align-items: center; justify-content: center; background-color: #aa000000;">
+      <text style="width: {{uiSizes.uiWidth}}px;">{{paths[paths.length - 1]}}</text>
+    </div>
+    <div style="width: {{uiSizes.screenWidth}}px; height: 2px; background-color: #ccffffff;"></div>
+  </div>
+</stack>

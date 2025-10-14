@@ -3,8 +3,8 @@
     "bundleName": "com.github.kqakqakqa.zhshi.files",
     "vendor": "kqakqakqa",
     "version": {
-      "code": 1000000,
-      "name": "1.0.0.20250617"
+      "code": 0,
+      "name": "1.2.in-progress"
     }
   },
   "deviceConfig": {},
@@ -16,16 +16,6 @@
       "deliveryWithInstall": true,
       "moduleName": "entry",
       "moduleType": "entry"
-    },
-    "distroFilter": {
-      "screenShape": {
-        "policy": "include",
-        "value": ["circle"]
-      },
-      "screenWindow": {
-        "policy": "include",
-        "value": ["454*454"]
-      }
     },
     "abilities": [
       {
@@ -39,7 +29,13 @@
       {
         "pages": [
           "pages/index/index",
-          "pages/about/about"
+          "pages/menu/menu",
+          "pages/menu/about/about",
+          "pages/menu/deviceInfo/deviceInfo",
+          "pages/menu/licenses/licenses",
+          "pages/viewer-dir/viewer-dir",
+          "pages/viewer-img/viewer-img",
+          "pages/viewer-text/viewer-text"
         ],
         "name": "default"
       }

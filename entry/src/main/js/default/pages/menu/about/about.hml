@@ -1,0 +1,6 @@
+<div on:swipe="swipeBack" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; align-items: center; justify-content: center; flex-direction: column;">
+  <image src="/..\\..\\entry/resources/base/media/icon.png" style="width: 114px; height: 114px; margin-bottom: 12px;"></image>
+  <text>枳实系列</text>
+  <text style="font-size: 38px;">{{appName}}</text>
+  <text style="margin-bottom: 12px;">v{{versionName}}</text>
+</div>

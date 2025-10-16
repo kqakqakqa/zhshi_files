@@ -10,9 +10,16 @@ export default {
     uiSizes: { screenWidth: 0, screenHeight: 0 },
     uiRefresh: false,
     timeBatteryStr: "",
-    paths: [""],
-    fileContent: "",
+    paths: [],
+    path: "",
+    maxLines: 0,
+    maxCharsInLine: 0,
+    fileLen: 0,
+    page: "",
+    showPage: [],
+    pageLen: 0,
     openPosition: 0,
+    progress: 0,
     atStart: false,
     atEnd: false,
     showTitle: true,
@@ -22,6 +29,8 @@ export default {
   onInit() {
     UiSizes.init(data => {
       this.uiSizes = data;
+      this.maxLines = getMaxLines(data.uiHeight);
+      this.maxCharsInLine = getMaxCharsInLine(data.uiWidth);
       this.uiRefresh = true;
     });
     HeaderTimeBattery.subscribe(data => {
@@ -30,68 +39,109 @@ export default {
     brightness.setKeepScreenOn({
       keepScreenOn: true,
     });
-    this.openPath();
+    this.initOpenPath();
   },
   onDestroy() {
     brightness.setKeepScreenOn({
       keepScreenOn: false,
     });
   },
-  openPath(direction) {
-    const currentPath = "internal://app" + this.paths.join("");
+  initOpenPath() {
+    this.path = "internal://app" + this.paths.join("");
     file.get({
-      uri: currentPath,
+      uri: this.path,
       success: f => {
-        const oldPosition = this.openPosition;
-        if (direction === "prev") {
-          this.openPosition -= maxBytes;
-        } else if (direction === "next") {
-          this.openPosition += getByteLength(this.fileContent);
-        }
-        let readLen = maxBytes;
-        if (this.openPosition <= 0) {
-          this.openPosition = 0;
-          if (direction === "prev") readLen = oldPosition;
-        } else if (this.openPosition >= f.length) {
-          this.openPosition = oldPosition;
-          this.atEnd = true;
-        } else {
-          this.atStart = false;
-          this.atEnd = false;
-        }
-        file.readArrayBuffer({
-          uri: currentPath,
-          position: this.openPosition,
-          length: readLen,
-          success: d => {
-            this.fileType = "text";
-            const text = replaceCRLF2LF(safeDecodeUTF8(d.buffer));
-            if (direction !== "prev") {
-              this.fileContent = getOnePageSlice(text);
-            } else {
-              // this.fileContent = getOnePageSlice(text)
-              this.fileContent = getOnePageSlice(text.split("").reverse().join("")).split("").reverse().join("");
-              this.openPosition += maxBytes - getByteLength(this.fileContent);
-            }
-            if (this.openPosition + getByteLength(this.fileContent) >= f.length) {
-              this.atEnd = true;
-            }
-            if (this.openPosition <= 0) {
-              this.atStart = true;
-            }
-            return;
-          },
-          fail: this.showFailData
-        });
-        return;
+        this.fileLen = f.length;
+        this.openPath();
       },
       fail: this.showFailData,
     });
   },
-  showFailData(data, code = "") {
+  openPath(direction) {
+    const oldPosition = this.openPosition;
+    if (direction === "prev") {
+      this.openPosition -= maxBytes;
+    } else if (direction === "next") {
+      this.openPosition += this.pageLen;
+    }
+    let readLen = maxBytes;
+    if (this.openPosition <= 0) {
+      this.openPosition = 0;
+      if (direction === "prev") readLen = oldPosition;
+    } else if (this.openPosition >= this.fileLen) {
+      this.openPosition = oldPosition;
+      this.atEnd = true;
+    } else {
+      this.atStart = false;
+      this.atEnd = false;
+    }
+    file.readArrayBuffer({
+      uri: this.path,
+      position: this.openPosition,
+      length: readLen,
+      success: d => {
+        this.fileType = "text";
+        const text = safeDecodeUTF8(d.buffer);
+        if (direction === "prev") {
+          this.sliceToPage(text.split("").reverse().join(""));
+          this.page = this.page.split("").reverse().join("");
+          this.showPage = this.page.split("\n");
+          this.openPosition += readLen - this.pageLen;
+        } else {
+          this.sliceToPage(text);
+          this.showPage = this.page.split("\n");
+        }
+        if (this.openPosition + this.pageLen >= this.fileLen) {
+          this.atEnd = true;
+        }
+        if (this.openPosition <= 0) {
+          this.atStart = true;
+        }
+        this.progress = this.atEnd ? 100 : this.atStart ? 0 : Number((this.openPosition / this.fileLen * 100).toFixed(2));
+        return;
+      },
+      fail: this.showFailData
+    });
+    return;
+  },
+  sliceToPage(str) {
+    this.page = "";
+    let lineCount = 1;
+    let charInLineCount = 0;
+    this.pageLen = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str[i];
+      const charWidth = estimateCharWidth(char);
+      charInLineCount += charWidth;
+      if (char === "\r") {
+        this.pageLen += getByteLen(char);
+        continue;
+      }
+      if (char === "\n") {
+        this.pageLen += getByteLen(char);
+        lineCount++;
+        if (lineCount > this.maxLines) break;
+        this.page += "\n";
+        charInLineCount = 0;
+        continue;
+      }
+      if (charInLineCount > this.maxCharsInLine) {
+        lineCount++;
+        if (lineCount > this.maxLines) break;
+        this.page += "\n" + char;
+        charInLineCount = charWidth;
+        this.pageLen += getByteLen(char);
+        continue;
+      }
+      this.page += char;
+      this.pageLen += getByteLen(char);
+    }
+  },
+  showFailData(data, code = undefined) {
     this.fileType = "fail";
     this.failData = code + " " + data;
   },
+  nullFn() { },
   onGoBackClick() {
     this.paths.pop();
     return Router.replace({
@@ -108,9 +158,34 @@ export default {
   onPageSwipe(data) {
     switch (data.direction) {
       case "up":
+      case "top":
         this.showTitle = false;
         break;
       case "down":
+      case "bottom":
+        this.showTitle = true;
+        break;
+      case "left":
+        this.openPath("next");
+        break;
+      case "right":
+        this.openPath("prev");
+        break;
+      default:
+        break;
+    }
+  },
+  onTitleClick() {
+    this.showTitle = !this.showTitle;
+  },
+  onTitleSwipe(data) {
+    switch (data.direction) {
+      case "up":
+      case "top":
+        this.showTitle = false;
+        break;
+      case "down":
+      case "bottom":
         this.showTitle = true;
         break;
       default:
@@ -119,61 +194,42 @@ export default {
   },
 }
 
-const maxChars = 80;
-const maxBytes = 320;
-const maxLines = 8;
+const maxBytes = 512;
 
-function getByteLength(str) {
-  let byteLength = 0;
+function getMaxLines(h) {
+  if (h === 360) return 9;
+  if (h === 396) return 10;
+  if (h === 276) return 7;
+  if (h === 306) return 8;
+  return 7;
+}
+
+function getMaxCharsInLine(w) {
+  if (w === 276) return 9;
+  if (w === 336) return 11;
+  return 9;
+}
+
+function getByteLen(str) {
+  let len = 0;
   for (let i = 0; i < str.length; i++) {
     const code = str.charCodeAt(i);
-    if (code <= 0x7F) {
-      byteLength += 1;
-    } else if (code <= 0x7FF) {
-      byteLength += 2;
-    } else if (code >= 0xD800 && code <= 0xDBFF) { // 高位代理
-      byteLength += 4;
-      i++;
-    } else if (code >= 0xDC00 && code <= 0xDFFF) { // 低位代理，一般不单独出现的
-      continue;
-    } else {
-      byteLength += 3;
-    }
+    if (code <= 0x7F || (code >= 0xD800 && code <= 0xDBFF)) len += 1; // ASCII字符、高位代理
+    else if (code <= 0x7FF) len += 2;
+    else len += 3; // 普通BMP字符、低位代理
   }
-  return byteLength;
+  return len;
 }
 
-function getOnePageSlice(str) {
-  let result = "";
-  let charCount = 0;
-  let lineCount = 0;
-  let currentLineLength = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    result += char;
-    charCount++;
-    currentLineLength++;
-    if (currentLineLength >= maxChars / maxLines) {
-      lineCount++;
-      currentLineLength = 0;
-    } else if (char === "\n") {
-      lineCount += 2;
-      currentLineLength = 0;
-    }
-    if (
-      charCount >= maxChars ||
-      lineCount > maxLines
-    ) break;
+function estimateCharWidth(char) {
+  const code = char.charCodeAt(0);
+  if ("\r\n\x1F".indexOf(char) >= 0) return 0;
+  if (code >= 0x20 && code <= 0x7E) {
+    if ("Il,.'`!:; ".indexOf(char) >= 0) return 0.25;
+    else if ("MmWw@#%&".indexOf(char) >= 0) return 1;
+    else return 0.75;
   }
-  return result;
-}
-
-function replaceCRLF2LF(str) {
-  var result = "";
-  for (var i = 0; i < str.length; i++) {
-    result += str[i] === "\r" ? "\x1F" : str[i];
-  }
-  return result;
+  return 1;
 }
 
 function safeDecodeUTF8(bytes) {

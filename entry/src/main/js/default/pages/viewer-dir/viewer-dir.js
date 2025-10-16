@@ -10,7 +10,6 @@ export default {
     timeBatteryStr: "",
     paths: [],
     files: [],
-    fileType: "",
     failData: "",
   },
   onInit() {
@@ -31,7 +30,7 @@ export default {
     }
   },
   onGoClick(item) {
-    this.paths.push("/" + item.uri);
+    this.paths.push("/" + item.uri.split("/").slice(-1));
     this.openPath();
   },
   openPath() {
@@ -45,7 +44,6 @@ export default {
             uri: currentPath,
             success: d2 => {
               this.clearData();
-              this.fileType = "dir";
               this.files = d2.fileList;
             },
             fail: this.showFailData
@@ -94,13 +92,11 @@ export default {
     });
   },
   clearData() {
-    this.fileType = "";
     this.files = [];
     this.failData = "";
   },
-  showFailData(data, code = "") {
+  showFailData(data, code = undefined) {
     this.clearData();
-    this.fileType = "fail";
     this.failData = code + " " + data + (code === 300 ? "\n(可能是空文件夹)" : "");
   },
 }

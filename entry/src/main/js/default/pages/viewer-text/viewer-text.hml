@@ -1,32 +1,37 @@
 <stack style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
-  <list if="{{uiRefresh}}" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight + (showTitle ? uiSizes.topMargin + 96 + 2 : 0)}}px;">
-    <list-item if="{{showTitle}}" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin + 96 + 2}}px; background-color: #fff; flex-wrap: wrap;">
-      <div onclick="onGoParentClick" style="width: {{uiSizes.screenWidth / 2}}px; height: {{uiSizes.topMargin}}px; align-items: center; justify-content: flex-end; background-color: #000;">
-        <text>{{ "[↑]  " }}</text>
-      </div>
-      <div onclick="onGoBackClick" style="width: {{uiSizes.screenWidth / 2}}px; height: {{uiSizes.topMargin}}px; align-items: center; background-color: #000;">
-        <text>{{ "  [←]" }}</text>
-      </div>
-      <div style="width: {{uiSizes.screenWidth}}px; height: 96px; align-items: center; background-color: #000;">
-        <text style="width: {{uiSizes.uiWidth}}px; margin-left: {{uiSizes.leftMargin}}px;">{{"" + this.paths.join("") || "internal://app/"}}</text>
-      </div>
-    </list-item>
+  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; align-items: center; justify-content: center;">
+    <text style="font-size: 30px;">{{timeBatteryStr}}</text>
+  </div>
 
-    <list-item if="{{fileType === 'text'}}" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
-      <stack onswipe="onPageSwipe" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
-        <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; align-items: center; justify-content: center;">
-          <text>{{timeBatteryStr}}</text>
-        </div>
-        <text style="width: {{uiSizes.uiWidth}}px; top: {{uiSizes.topMargin}}px; left: {{uiSizes.leftMargin}}px;">{{fileContent}}</text>
-        <div onclick="onPrevPageClick" style="width: {{uiSizes.screenWidth / 2}}px; height: {{uiSizes.screenHeight}}px; background-color: transparent;"></div>
-        <div onclick="onNextPageClick" style="width: {{uiSizes.screenWidth / 2}}px; height: {{uiSizes.screenHeight}}px; left: {{uiSizes.screenWidth / 2}}px; background-color: transparent;"></div>
-        <div if="{{!atStart}}" style="width: {{uiSizes.leftMargin}}px; height: {{uiSizes.screenHeight}}px; align-items: center; justify-content: center; font-size: 36px;"><text>{{"<"}}</text></div>
-        <div if="{{!atEnd}}" style="width: {{uiSizes.leftMargin}}px; height: {{uiSizes.screenHeight}}px; left: {{(uiSizes.screenWidth + uiSizes.uiWidth) / 2}}px; align-items: center; justify-content: center; font-size: 36px;"><text>{{">"}}</text></div>
-      </stack>
-    </list-item>
+  <div style="width: {{uiSizes.uiWidth}}px; height: {{uiSizes.uiHeight}}px; top: {{uiSizes.topMargin}}px; left: {{uiSizes.leftMargin}}px; flex-direction: column;">
+    <text for="{{showPage}}" style="font-size: 30px;">{{$item}}</text>
+  </div>
 
-    <list-item if="{{fileType === 'fail'}}" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; flex-direction: column; align-items: center;">
-      <text style="width: {{uiSizes.uiWidth}}px;">{{failData}}</text>
-    </list-item>
-  </list>
+  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.isCircle ? uiSizes.screenHeight : uiSizes.topMargin}}px; top: {{uiSizes.isCircle ? 0 : uiSizes.screenHeight - uiSizes.topMargin}}px; align-items: center; justify-content: space-between; background-color: transparent;">
+    <text style="font-size: 30px;">{{atStart ? " " : "  ﹤"}}</text>
+    <text style="font-size: 30px;">{{atEnd ? " " : "﹥  "}}</text>
+  </div>
+
+  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; top: {{uiSizes.screenHeight - uiSizes.topMargin}}px; align-items: center; justify-content: center; background-color: transparent;">
+    <text style="font-size: 30px;">{{progress}}%</text>
+  </div>
+
+  <div on:click="onPrevPageClick" on:swipe="onPageSwipe" style="width: {{uiSizes.screenWidth / 2}}px; height: {{uiSizes.screenHeight * 2 / 3}}px; top: {{uiSizes.screenHeight * 1 / 3}}px; background-color: transparent;"></div>
+  <div on:click="onNextPageClick" on:swipe="onPageSwipe" style="width: {{uiSizes.screenWidth / 2}}px; height: {{uiSizes.screenHeight * 2 / 3}}px; left: {{uiSizes.screenWidth / 2}}px; top: {{uiSizes.screenHeight * 1 / 3}}px; background-color: transparent;"></div>
+  <div on:click="onTitleClick" on:swipe="onPageSwipe" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight * 1 / 3}}px; background-color: transparent;"></div>
+
+  <div if="{{fileType === 'fail'}}" on:click="onTitleClick" on:swipe="onTitleSwipe" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; justify-content: center; padding-top:{{uiSizes.topMargin}}px">
+    <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px;">{{failData}}</text>
+  </div>
+
+  <div if="{{showTitle}}" on:click="nullFn" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; flex-direction: column; background-color: transparent;">
+    <div on:click="onGoBackClick" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; align-items: center; justify-content: center; background-color: #aa000000;">
+      <text style="font-size: 30px;">{{ "[←]" }}</text>
+    </div>
+    <div style="width: {{uiSizes.screenWidth}}px; height: 96px; align-items: center; justify-content: center; background-color: #aa000000;">
+      <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px;">{{paths[paths.length - 1]}}</text>
+    </div>
+    <div style="width: {{uiSizes.screenWidth}}px; height: 2px; background-color: #ccffffff;"></div>
+    <div on:click="onTitleClick" on:swipe="onTitleSwipe" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; background-color: transparent;"></div>
+  </div>
 </stack>

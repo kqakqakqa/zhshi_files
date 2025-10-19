@@ -59,20 +59,17 @@ export default {
           const fileSubExt = fileExtsLen > 2 ? fileExts[fileExtsLen - 2].toLowerCase() : "";
 
           // image
-          const isImageFile = (
+          const isImage = (
             fileExt === "bmp" ||
             fileExt === "jpg" ||
             fileExt === "png" ||
-            fileExt === "bin"
-          );
-          const isUserImageFile = (
-            fileExt === "mp3" &&
+            fileExt === "bin" ||
             fileSubExt === "bmp" ||
             fileSubExt === "jpg" ||
             fileSubExt === "png" ||
             fileSubExt === "bin"
           );
-          if (isImageFile || isUserImageFile) {
+          if (isImage) {
             return Router.replace({
               uri: "pages/viewer-img/viewer-img",
               params: { paths: this.paths },

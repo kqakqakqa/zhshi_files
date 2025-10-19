@@ -11,6 +11,7 @@ export default {
     bundleName: "",
     paths: [],
     showTitle: true,
+    fileName: "",
     imgCopyName: "",
   },
   onInit() {
@@ -20,17 +21,24 @@ export default {
     });
     BundleName.getBundleName(bundleName => {
       this.bundleName = bundleName;
+      this.openPath();
     });
-    this.openPath();
   },
   openPath() {
-    const fileExts = this.paths[this.paths.length - 1].split(".");
+    this.fileName = this.paths[this.paths.length - 1].slice(1);
+    const fileExts = this.fileName.split(".");
     const fileExtsLen = fileExts.length;
     const fileExt = fileExtsLen > 1 ? fileExts[fileExtsLen - 1].toLowerCase() : "";
     const fileSubExt = fileExtsLen > 2 ? fileExts[fileExtsLen - 2].toLowerCase() : "";
+    const isSubExtImage = (
+      fileSubExt === "bmp" ||
+      fileSubExt === "jpg" ||
+      fileSubExt === "png" ||
+      fileSubExt === "bin"
+    );
 
     // image
-    this.imgCopyName = Date.now() + "." + (fileExt === "mp3" ? fileSubExt : fileExt);
+    this.imgCopyName = Date.now() + "." + (isSubExtImage ? fileSubExt : fileExt);
     const imgDir = "internal://app\\..\\../run/" + this.bundleName + "/assets/js/default/zhshi-file-img";
     file.rmdir({
       uri: imgDir,

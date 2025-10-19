@@ -8,7 +8,7 @@
       <text style="font-size: 30px;">{{ "[←]" }}</text>
     </div>
     <div style="width: {{uiSizes.screenWidth}}px; height: 96px; align-items: center; justify-content: center; background-color: #aa000000;">
-      <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px;">{{paths[paths.length - 1]}}</text>
+      <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px;">{{fileName}}</text>
     </div>
     <div style="width: {{uiSizes.screenWidth}}px; height: 2px; background-color: #ccffffff;"></div>
   </div>

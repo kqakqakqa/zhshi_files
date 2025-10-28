@@ -1,4 +1,4 @@
-import router from "@system.router";
+console.info("Router.js onImport");
 
 export default {
   /**
@@ -10,14 +10,15 @@ export default {
    *
    */
   replace(d) {
+    const params = d.params || {};
     const replace = {
       uri: d.uri,
-      params: d.params,
+      params: params,
     };
-    router.replace(
+    $app.getImports().router.replace(
       d.direct ?
         replace :
-        { uri: "/pages/index/index", params: replace }
+        { uri: "/pages/router/router", params: replace }
     );
   },
 }

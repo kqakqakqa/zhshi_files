@@ -1,34 +1,28 @@
-import systemBattery from "@system.battery";
-
-export default {
+const _this = {
   subscribe,
-}
+  time: "--:--",
+  battery: "--%",
+};
 
-let time = "--:--";
-let battery = "--%";
 let onUpdate;
 let hours, minutes;
+let interval;
 
 function subscribe(onUpdateFn) {
   onUpdate = onUpdateFn;
+  clearInterval(interval);
   update();
-  setInterval(update, 1000);
+  interval = setInterval(update, 1000);
 }
 
 function update() {
-  systemBattery.getStatus({
-    success: onSuccess,
-    complete: onComplete,
+  $app.getImports().battery.getStatus({
+    success(status) {
+      _this.time = getTimeStr(new Date(Date.now() + 28800000));
+      _this.battery = Math.round(status.level * 100) + "%";
+    },
+    complete: onUpdate,
   });
-}
-
-function onSuccess(status) {
-  time = getTimeStr(new Date(Date.now() + 28800000));
-  battery = Math.round(status.level * 100) + "%";
-}
-
-function onComplete() {
-  onUpdate({ time, battery });
 }
 
 function getTimeStr(date) {
@@ -36,3 +30,5 @@ function getTimeStr(date) {
   minutes = ("0" + date.getUTCMinutes()).slice(-2);
   return hours + ":" + minutes;
 }
+
+export default _this;

@@ -4,7 +4,7 @@
     "vendor": "kqakqakqa",
     "version": {
       "code": 0,
-      "name": "1.3.20251020"
+      "name": "1.5.20251029"
     }
   },
   "deviceConfig": {},
@@ -29,6 +29,7 @@
       {
         "pages": [
           "pages/index/index",
+          "pages/router/router",
           "pages/menu/menu",
           "pages/menu/about/about",
           "pages/menu/deviceInfo/deviceInfo",

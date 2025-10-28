@@ -1,50 +1,48 @@
-import file from "@system.file";
-
-import UiSizes from "../../UiSizes.js";
-import Router from "../../Router.js";
+console.info("pages/viewer-dir/viewer-dir onInit");
 
 export default {
   data: {
-    uiSizes: { screenWidth: 0, screenHeight: 0 },
-    uiRefresh: false,
-    timeBatteryStr: "",
-    paths: [],
+    uiSizes: $app.getImports().UiSizes,
+    path: "",
     files: [],
     failData: "",
   },
   onInit() {
-    UiSizes.init(data => {
-      this.uiSizes = data;
-      this.uiRefresh = true;
-    });
     this.openPath();
   },
+  onDestroy() {
+  },
   onGoParentClick() {
-    this.paths.push("\\..");
+    $app.getImports().paths.paths.push("\\..");
     this.openPath();
   },
   onGoBackClick() {
-    if (this.paths.length > 0) {
-      this.paths.pop();
+    if ($app.getImports().paths.paths.length > 0) {
+      $app.getImports().paths.paths.pop();
       this.openPath();
     }
   },
-  onGoClick(item) {
-    this.paths.push("/" + item.uri.split("/").slice(-1));
+  onGoClick(uri) {
+    $app.getImports().paths.paths.push("/" + uri);
     this.openPath();
   },
   openPath() {
-    const currentPath = "internal://app" + this.paths.join("");
-    file.get({
-      uri: currentPath,
+    this.path = $app.getImports().paths.paths.join("");
+    $app.getImports().file.get({
+      uri: "internal://app" + this.path,
       success: f => {
         // dir
         if (f.type === "dir") {
-          file.list({
-            uri: currentPath,
+          $app.getImports().file.list({
+            uri: "internal://app" + this.path,
             success: d2 => {
               this.clearData();
-              this.files = d2.fileList;
+              for (let f = 0; f < d2.fileList.length; f++) {
+                this.files.push({
+                  uri: d2.fileList[f].uri.split("/").slice(-1).join(""),
+                  type: d2.fileList[f].type,
+                });
+              }
             },
             fail: this.showFailData
           });
@@ -70,17 +68,11 @@ export default {
             fileSubExt === "bin"
           );
           if (isImage) {
-            return Router.replace({
-              uri: "pages/viewer-img/viewer-img",
-              params: { paths: this.paths },
-            });
+            return $app.getImports().Router.replace({ uri: "pages/viewer-img/viewer-img" });
           }
 
           // text
-          return Router.replace({
-            uri: "pages/viewer-text/viewer-text",
-            params: { paths: this.paths },
-          });
+          return $app.getImports().Router.replace({ uri: "pages/viewer-text/viewer-text" });
         }
 
         return this.showFailData("未知文件类型 " + f.type);

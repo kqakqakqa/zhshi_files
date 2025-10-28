@@ -1,31 +1,18 @@
-import file from "@system.file";
-
-import UiSizes from "../../UiSizes.js";
-import BundleName from "../../BundleName.js";
-import Router from "../../Router.js";
+console.info("pages/viewer-img/viewer-img onInit");
 
 export default {
   data: {
-    uiSizes: { screenWidth: 0, screenHeight: 0 },
-    uiRefresh: false,
-    bundleName: "",
-    paths: [],
+    uiSizes: $app.getImports().UiSizes,
+    uiRefresh: true,
     showTitle: true,
     fileName: "",
     imgCopyName: "",
   },
   onInit() {
-    UiSizes.init(data => {
-      this.uiSizes = data;
-      this.uiRefresh = true;
-    });
-    BundleName.getBundleName(bundleName => {
-      this.bundleName = bundleName;
-      this.openPath();
-    });
+    this.openPath();
   },
   openPath() {
-    this.fileName = this.paths[this.paths.length - 1].slice(1);
+    this.fileName = $app.getImports().paths.paths[$app.getImports().paths.paths.length - 1].split("/")[1];
     const fileExts = this.fileName.split(".");
     const fileExtsLen = fileExts.length;
     const fileExt = fileExtsLen > 1 ? fileExts[fileExtsLen - 1].toLowerCase() : "";
@@ -39,22 +26,22 @@ export default {
 
     // image
     this.imgCopyName = Date.now() + "." + (isSubExtImage ? fileSubExt : fileExt);
-    const imgDir = "internal://app\\..\\../run/" + this.bundleName + "/assets/js/default/zhshi-file-img";
-    file.rmdir({
+    const imgDir = "internal://app\\..\\../run/" + $app.getImports().BundleName.bundleName + "/assets/js/default/zhshi-file-img";
+    $app.getImports().file.rmdir({
       uri: imgDir,
       recursive: true,
       complete: () => {
-        file.mkdir({
+        $app.getImports().file.mkdir({
           uri: imgDir,
           complete: () => {
-            file.copy({
-              srcUri: "internal://app" + this.paths.join(""),
+            $app.getImports().file.copy({
+              srcUri: "internal://app" + $app.getImports().paths.paths.join(""),
               dstUri: imgDir + "/" + this.imgCopyName,
               complete: () => {
                 this.uiRefresh = false;
                 setInterval(() => {
                   this.uiRefresh = true;
-                }, 100);
+                }, 50);
               },
             });
           }
@@ -64,11 +51,8 @@ export default {
   },
   nullFn() { },
   onGoBackClick() {
-    this.paths.pop();
-    return Router.replace({
-      uri: "pages/viewer-dir/viewer-dir",
-      params: { paths: this.paths },
-    });
+    $app.getImports().paths.paths.pop();
+    return $app.getImports().Router.replace({ uri: "pages/viewer-dir/viewer-dir" });
   },
   onImgClick() {
     this.showTitle = !this.showTitle;

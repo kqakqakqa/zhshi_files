@@ -1,14 +1,17 @@
-import router from "@system.router";
+console.info("pages/index/index onInit");
 
 export default {
   data: {
     uri: "pages/viewer-dir/viewer-dir",
-    params: undefined,
+    params: {},
   },
   onInit() {
-    router.replace({
-      uri: this.uri,
-      params: this.params,
+    $app.getImports().BundleName.init();
+    $app.getImports().UiSizes.init(() => {
+      $app.getImports().Router.replace({
+        uri: this.uri,
+        direct: true,
+      });
     });
   },
 }

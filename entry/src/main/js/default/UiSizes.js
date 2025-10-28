@@ -1,26 +1,34 @@
-import device from "@system.device";
+console.info("UiSizes.js onImport");
 
-export default {
+const _this = {
   init,
+  screenWidth: undefined,
+  screenHeight: undefined,
+  isCircle: undefined,
+  uiWidth: undefined,
+  uiHeight: undefined,
+  topMargin: undefined,
+  leftMargin: undefined,
 }
 
 let deviceInfo = {};
+let uiSize;
 
 function init(onComplete) {
-  device.getInfo({
+  $app.getImports().device.getInfo({
     success: data => {
       deviceInfo = data;
     },
     complete: () => {
-      const screenWidth = deviceInfo.windowWidth;
-      const screenHeight = deviceInfo.windowHeight;
-      const isCircle = deviceInfo.screenShape === "circle";
-      const uiSize = getUiSize(screenWidth, screenHeight);
-      const uiWidth = uiSize[0];
-      const uiHeight = uiSize[1];
-      const topMargin = (screenHeight - uiHeight) / 2;
-      const leftMargin = (screenWidth - uiWidth) / 2;
-      onComplete({ screenWidth, screenHeight, isCircle, uiWidth, uiHeight, topMargin, leftMargin });
+      _this.screenWidth = deviceInfo.windowWidth;
+      _this.screenHeight = deviceInfo.windowHeight;
+      _this.isCircle = deviceInfo.screenShape === "circle";
+      uiSize = getUiSize(_this.screenWidth, _this.screenHeight);
+      _this.uiWidth = uiSize[0];
+      _this.uiHeight = uiSize[1];
+      _this.topMargin = (_this.screenHeight - _this.uiHeight) / 2;
+      _this.leftMargin = (_this.screenWidth - _this.uiWidth) / 2;
+      onComplete();
     },
   });
 }
@@ -34,3 +42,5 @@ function getUiSize(w, h) {
   if (w === 466 && h === 466) return [336, 306]; // GT3
   return [276, 276];
 }
+
+export default _this;

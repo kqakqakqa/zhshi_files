@@ -1,23 +1,35 @@
 <stack style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
-  <list style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
+  <list ref="fileList" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
+    <!-- title -->
     <list-item style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin + 96 + 2}}px; background-color: #fff; flex-wrap: wrap;">
-      <div on:click="onGoParentClick" style="width: {{uiSizes.screenWidth / 2}}px; height: {{uiSizes.topMargin}}px; align-items: center; justify-content: flex-end; background-color: #000;">
+      <div on:click="onGoParentClick" style="width: {{uiSizes.screenWidth / 2}}px; height: {{uiSizes.topMargin}}px; justify-content: flex-end; align-items: center; background-color: #000;">
         <text style="font-size: 30px;">{{ "[↑]  " }}</text>
       </div>
       <div on:click="onGoBackClick" style="width: {{uiSizes.screenWidth / 2}}px; height: {{uiSizes.topMargin}}px; align-items: center; background-color: #000;">
         <text style="font-size: 30px;">{{ "  [←]" }}</text>
       </div>
-      <div style="width: {{uiSizes.screenWidth}}px; height: 96px; align-items: center; justify-content: center; background-color: #000;">
+      <div style="width: {{uiSizes.screenWidth}}px; height: 96px; justify-content: center; align-items: center; background-color: #000;">
         <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px;">{{path || "internal://app"}}</text>
       </div>
     </list-item>
 
-    <list-item style="width: {{uiSizes.screenWidth}}px; height: {{failData === '' ? (97 * files.length + uiSizes.topMargin) : (uiSizes.screenHeight - (uiSizes.topMargin + 96 + 2))}}px; flex-direction: column; align-items: center;">
-      <div style="width: {{uiSizes.uiWidth}}px; height: {{97 * files.length}}px; background-color: #ccc; flex-direction: column;">
+    <list-item style="width: {{uiSizes.screenWidth}}px; height: {{!failData ? (97 * files.length + uiSizes.topMargin + ((hasNext || hasPrev) ? 96 : 0)) : (uiSizes.screenHeight - (uiSizes.topMargin + 96 + 2))}}px; flex-direction: column; align-items: center;">
+      <!-- file list -->
+      <div if="{{!failData}}" style="width: {{uiSizes.uiWidth}}px; height: {{97 * files.length}}px; background-color: #ccc; flex-direction: column;">
         <div for="{{files}}" on:click="onGoClick({{$item.uri}})" style="width: {{uiSizes.uiWidth}}px; height: 96px; margin-bottom: 1px; align-items: center; background-color: #000;">
-          <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px; color: {{$item.type === 'dir' ? '#ffa' : $item.type === 'file' ? '#aaf' : '#fff'}};">{{$item.uri}}</text>
+          <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px; color: {{$item.color}};">{{$item.uri}}</text>
         </div>
       </div>
+      <!-- page control -->
+      <div if="{{hasNext || hasPrev}}" style="width: {{uiSizes.uiWidth}}px; height: 97px; justify-content: space-between; align-items: center;">
+        <div on:click="onPrevPageClick" style="width: {{uiSizes.uiWidth / 2 - 0.5}}px; height: 96px; justify-content: center; align-items: center;">
+          <text>{{hasPrev ? "  ﹤" : " "}}</text>
+        </div>
+        <div on:click="onNextPageClick" style="width: {{uiSizes.uiWidth / 2 - 0.5}}px; height: 96px; justify-content: center; align-items: center;">
+          <text>{{hasNext ? "﹥  " : " "}}</text>
+        </div>
+      </div>
+      <!-- fail data -->
       <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px;">{{failData}}</text>
     </list-item>
   </list>

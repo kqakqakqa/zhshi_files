@@ -1,5 +1,7 @@
 console.info("pages/viewer-img/viewer-img onInit");
 
+let clickTimeout = null;
+
 export default {
   data: {
     uiSizes: $app.getImports().UiSizes,
@@ -7,6 +9,7 @@ export default {
     showTitle: true,
     fileName: "",
     imgCopyName: "",
+    imgScale: 1,
   },
   onInit() {
     this.openPath();
@@ -39,7 +42,7 @@ export default {
               dstUri: imgDir + "/" + this.imgCopyName,
               complete: () => {
                 this.uiRefresh = false;
-                setInterval(() => {
+                setTimeout(() => {
                   this.uiRefresh = true;
                 }, 50);
               },
@@ -55,6 +58,26 @@ export default {
     return $app.getImports().Router.replace({ uri: "pages/viewer-dir/viewer-dir" });
   },
   onImgClick() {
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      clickTimeout = null;
+      this.onImgDoubleClick();
+    } else {
+      clickTimeout = setTimeout(() => {
+        clickTimeout = null;
+        this.onImgSingleClick();
+      }, 250);
+    }
+  },
+  onImgSingleClick() {
     this.showTitle = !this.showTitle;
+  },
+  onImgDoubleClick() {
+    this.imgScale = (this.imgScale >= 4) ? 1 : (this.imgScale * 2);
+    this.uiRefresh = false;
+    setTimeout(() => {
+      this.uiRefresh = true;
+    }, 50);
+    console.log("imgScale: " + this.imgScale);
   },
 }

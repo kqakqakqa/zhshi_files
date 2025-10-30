@@ -1,13 +1,11 @@
-<stack style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
-  <div on:click="onImgClick" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; align-items: center; justify-content: center;">
-    <image if="{{uiRefresh}}" src="/zhshi-file-img/{{imgCopyName}}" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; background-color: #333; object-fit: contain;"></image>
-  </div>
+<stack style="width: 1920px; height: 1920px;">
+  <image on:click="onImgClick" if="{{uiRefresh}}" src="/zhshi-file-img/{{imgCopyName}}" style="width: {{uiSizes.screenWidth * imgScale}}px; height: {{uiSizes.screenHeight * imgScale}}px; background-color: #333; object-fit: contain;"></image>
 
   <div if="{{showTitle}}" on:click="nullFn" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin + 96 + 2}}px; flex-direction: column; background-color: transparent;">
-    <div on:click="onGoBackClick" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; align-items: center; justify-content: center; background-color: #aa000000;">
+    <div on:click="onGoBackClick" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; justify-content: center; align-items: center; background-color: #aa000000;">
       <text style="font-size: 30px;">{{ "[←]" }}</text>
     </div>
-    <div style="width: {{uiSizes.screenWidth}}px; height: 96px; align-items: center; justify-content: center; background-color: #aa000000;">
+    <div style="width: {{uiSizes.screenWidth}}px; height: 96px; justify-content: center; align-items: center; background-color: #aa000000;">
       <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px;">{{fileName}}</text>
     </div>
     <div style="width: {{uiSizes.screenWidth}}px; height: 2px; background-color: #ccffffff;"></div>

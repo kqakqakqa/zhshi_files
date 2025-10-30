@@ -1,6 +1,6 @@
 <stack style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px;">
   <!-- timeBatteryStr -->
-  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; align-items: center; justify-content: center;">
+  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; justify-content: center; align-items: center;">
     <text style="font-size: 30px;">{{timeBatteryStr}}</text>
   </div>
 
@@ -10,13 +10,13 @@
   </div>
 
   <!-- prev next label -->
-  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.isCircle ? uiSizes.screenHeight : uiSizes.topMargin}}px; top: {{uiSizes.isCircle ? 0 : uiSizes.screenHeight - uiSizes.topMargin}}px; align-items: center; justify-content: space-between; background-color: transparent;">
-    <text style="font-size: 30px;">{{hasPrev ? "  ﹤" : "  ·"}}</text>
-    <text style="font-size: 30px;">{{hasNext ? "﹥  " : "·  "}}</text>
+  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.isCircle ? uiSizes.screenHeight : uiSizes.topMargin}}px; top: {{uiSizes.isCircle ? 0 : uiSizes.screenHeight - uiSizes.topMargin}}px; justify-content: space-between; align-items: center; background-color: transparent;">
+    <text style="font-size: 30px;">{{hasPrev ? "  ﹤" : ""}}</text>
+    <text style="font-size: 30px;">{{hasNext ? "﹥  " : ""}}</text>
   </div>
 
   <!-- progress -->
-  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; top: {{uiSizes.screenHeight - uiSizes.topMargin}}px; align-items: center; justify-content: center; background-color: transparent;">
+  <div style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; top: {{uiSizes.screenHeight - uiSizes.topMargin}}px; justify-content: center; align-items: center; background-color: transparent;">
     <text style="font-size: 30px;">{{progress}}%</text>
   </div>
 
@@ -32,10 +32,10 @@
 
   <!-- title -->
   <div if="{{showTitle}}" on:click="nullFn" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.screenHeight}}px; flex-direction: column; background-color: transparent;">
-    <div on:click="onGoBackClick" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; align-items: center; justify-content: center; background-color: #aa000000;">
+    <div on:click="onGoBackClick" on:swipe="nullFn" style="width: {{uiSizes.screenWidth}}px; height: {{uiSizes.topMargin}}px; justify-content: center; align-items: center; background-color: #aa000000;">
       <text style="font-size: 30px;">{{ "[←]" }}</text>
     </div>
-    <div style="width: {{uiSizes.screenWidth}}px; height: 96px; align-items: center; justify-content: center; background-color: #aa000000;">
+    <div style="width: {{uiSizes.screenWidth}}px; height: 96px; justify-content: center; align-items: center; background-color: #aa000000;">
       <text style="width: {{uiSizes.uiWidth}}px; font-size: 30px;">{{fileName}}</text>
     </div>
     <div style="width: {{uiSizes.screenWidth}}px; height: 2px; background-color: #ccffffff;"></div>
